@@ -100,6 +100,14 @@ async function getRecipes() {
   //            resolve() method.
   // A10. TODO - Log any errors from catch using console.error
   // A11. TODO - Pass any errors to the Promise's reject() function
+  return Promise.all(RECIPE_URLS.map(async URL => await (await fetch(URL)).json()))
+  .catch(err => {
+    console.error(err);
+  })
+  .then(data => {
+    saveRecipesToStorage(data);
+    return data;
+  });
 }
 
 /**
