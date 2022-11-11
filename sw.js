@@ -1,6 +1,16 @@
 // sw.js - This file needs to be in the root of the directory to work,
 //         so do not move it next to the other scripts
 
+// CONSTANTS
+const RECIPE_URLS = [
+  'https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json',
+  'https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json',
+  'https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json',
+  'https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json',
+  'https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json',
+  'https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json',
+];
+
 const CACHE_NAME = 'lab-7-starter';
 
 // Installs the service worker. Feed it some initial URLs to cache
@@ -37,4 +47,12 @@ self.addEventListener('fetch', function (event) {
   // B8. TODO - If the request is in the cache, return with the cached version.
   //            Otherwise fetch the resource, add it to the cache, and return
   //            network response.
+  event.respondWith(caches.open(CACHE_NAME).then((cache) => {
+    return cache.match(event.request).then((cachedResponse) => {
+      return cachedResponse || fetch(event.request.url).then((fetchedResponse) => {
+        cache.put(event.request, fetchedResponse.clone());
+        return fetchedResponse;
+      });
+    });
+  }));
 });
